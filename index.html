@@ -3,54 +3,53 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>دروس مستر عمر سليمان - Chemistry</title>
-  <meta name="description" content="صور حصص الكيمياء (سبورة + ملاحظات) مرتبة حسب الفصول والدروس مع بحث وفلترة.">
+  <title>📘 دروس مستر عمر سليمان - Chemistry</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header class="site-header" aria-label="رأس الصفحة">
+  <header class="site-header">
     <div class="brand">
-      <img src="images/logo.png" class="logo" alt="Logo" width="44" height="44"/>
-      <div>
-        <h1 class="title">📘 دروس مستر عمر سليمان - Chemistry</h1>
+      <img src="images/logo.png" alt="Logo" class="logo" />
+      <div class="titles">
+        <h1>دروس مستر عمر سليمان - <span class="chem">Chemistry</span></h1>
         <p class="subtitle">صور السبورة والدروس — فلترة، بحث سريع، ومعاينة مكبرة</p>
       </div>
     </div>
-    <div class="controls" role="search">
-      <div class="input-wrap">
-        <input id="searchInput" type="search" placeholder="ابحث باسم الدرس أو الفصل… (مثال: 1 أو Lesson 3)" aria-label="بحث" />
+
+    <div class="controls">
+      <label class="sr-only" for="chapterSelect">فلترة حسب الفصل</label>
+      <select id="chapterSelect" class="control"></select>
+
+      <div class="search-wrap">
+        <input id="searchInput" type="search" placeholder="ابحث باسم الدرس أو الفصل" aria-label="ابحث عن درس" />
         <kbd class="kbd">/</kbd>
       </div>
-      <div class="select-wrap">
-        <label for="chapterSelect" class="sr-only">فلترة حسب الفصل</label>
-        <select id="chapterSelect" aria-label="الفصل"></select>
-      </div>
-      <button id="clearBtn" class="ghost" title="مسح الفلاتر">مسح</button>
+
+      <button id="resetBtn" class="btn ghost" title="مسح البحث والفلتر">مسح</button>
     </div>
   </header>
 
-  <section class="chips" id="chipBar" aria-label="اختصارات الفصول"></section>
-
   <main class="container">
-    <div id="stats" class="stats">0 نتيجة</div>
     <div id="lessonsContainer" class="grid"></div>
-    <div id="emptyState" class="empty" hidden>
-      <img src="data:image/svg+xml,%3Csvg width='120' height='120' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='60' cy='60' r='56' fill='%23e3f2fd'/%3E%3Ctext x='50%25' y='54%25' text-anchor='middle' font-size='42' fill='%231e88e5'%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E" alt="">
-      <p>لا توجد نتائج مطابقة. جرّب كلمة بحث مختلفة أو اختر فصلًا آخر.</p>
-    </div>
   </main>
 
   <footer class="site-footer">
-    <p>تابعونا على تيك توك: <a href="https://www.tiktok.com/@wearedevx" target="_blank" rel="noopener">wearedevx@</a></p>
+    <p>تابعونا على تيك توك
+      <a href="https://www.tiktok.com/@wearedevx" target="_blank" rel="noopener">@wearedevx</a>
+    </p>
+    <p class="credit">Developed by Farouk</p>
   </footer>
 
-  <div id="lightbox" class="lightbox" aria-hidden="true" hidden>
-    <button class="close" id="lbClose" aria-label="إغلاق">✕</button>
-    <img id="lbImg" alt="صورة الدرس" />
-    <div id="lbCaption" class="caption"></div>
+  <!-- Lightbox Modal -->
+  <div id="lightbox" class="lightbox" aria-hidden="true">
+    <button class="lb-close" id="lbClose" aria-label="إغلاق">×</button>
+    <button class="lb-prev" id="lbPrev" aria-label="السابق">‹</button>
+    <button class="lb-next" id="lbNext" aria-label="التالي">›</button>
+    <img id="lbImage" alt="معاينة الصورة" />
+    <div id="lbCaption" class="lb-caption"></div>
   </div>
 
   <script src="data.js"></script>
