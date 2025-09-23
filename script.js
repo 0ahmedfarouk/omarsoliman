@@ -1,77 +1,79 @@
-const lessonsContainer=document.getElementById('lessonsContainer');
-const searchInput=document.getElementById('searchInput');
-const chapterSelect=document.getElementById('chapterSelect');
-const clearBtn=document.getElementById('clearBtn');
-const stats=document.getElementById('stats');
-const emptyState=document.getElementById('emptyState');
-const chipBar=document.getElementById('chipBar');
+document.addEventListener('keydown', (e) => {
+  const active = document.activeElement;
+  if (e.key === '/' && (!active || active.tagName !== 'INPUT')) {
+    e.preventDefault();
+    document.getElementById('searchInput').focus();
+  }
+});
 
-const chapterLabels={"Chapter 1":"الفصل الأول","Chapter 2":"الفصل الثاني"};
+const container = document.getElementById('lessonsContainer');
+const searchInput = document.getElementById('searchInput');
+const chapterSelect = document.getElementById('chapterSelect');
+const resetBtn = document.getElementById('resetBtn');
 
-window.addEventListener('keydown',(e)=>{ if(e.key==='/'&&document.activeElement!==searchInput){ e.preventDefault(); searchInput.focus(); }});
+const allChapters = lessons.map(c => c.chapter);
+chapterSelect.innerHTML = '<option value="">كل الفصول</option>' + allChapters.map(c => `<option value="${c}">${c}</option>`).join('');
 
-function populateChapterFilter(){
-  const chapters=lessons.map(c=>c.chapter);
-  chapterSelect.innerHTML=`<option value="">كل الفصول</option>`;
-  chipBar.innerHTML='';
-  chapters.forEach(ch=>{
-    const opt=document.createElement('option');
-    opt.value=ch; opt.textContent=chapterLabels[ch]??ch;
-    chapterSelect.appendChild(opt);
-    const chip=document.createElement('button');
-    chip.className='chip'; chip.dataset.value=ch; chip.textContent=chapterLabels[ch]??ch;
-    chip.addEventListener('click',()=>{
-      if(chapterSelect.value===ch){ chapterSelect.value=''; chip.classList.remove('active'); }
-      else { chapterSelect.value=ch; document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active')); chip.classList.add('active'); }
-      render();
-    });
-    chipBar.appendChild(chip);
-  });
-}
-
-function debounce(fn,ms=200){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms); }; }
-
-function buildCard(chapterName, lesson){
-  const card=document.createElement('article'); card.className='card';
-  const badge=`<span class="badge">${chapterLabels[chapterName]??chapterName}</span>`;
-  const header=`<div class="card-header"><h3 class="card-title">${lesson.title}</h3>${badge}</div>`;
-  const imgs=lesson.images.map(src=>`<img src="${src}" alt="${lesson.title}" loading="lazy" onerror="this.style.display='none'" data-caption="${lesson.title} — ${chapterLabels[chapterName]??chapterName}" />`).join('');
-  card.innerHTML=header+`<div class="images">${imgs}</div>`;
-  return card;
-}
-
-function queryLessons(q='',chapter=''){
-  const lower=q.trim().toLowerCase(); const out=[];
-  lessons.forEach(group=>{
-    if(chapter && group.chapter!==chapter) return;
-    group.lessons.forEach(lesson=>{
-      const hay=(lesson.title+' '+group.chapter).toLowerCase();
-      if(!lower || hay.includes(lower)) out.push({chapter:group.chapter, lesson});
-    });
-  });
-  return out;
-}
+function match(title, q){return title.toLowerCase().includes((q||'').toLowerCase());}
 
 function render(){
-  const q=searchInput.value, ch=chapterSelect.value;
-  const list=queryLessons(q,ch);
-  lessonsContainer.innerHTML='';
-  list.forEach(item=>lessonsContainer.appendChild(buildCard(item.chapter,item.lesson)));
-  stats.textContent=list.length+' نتيجة';
-  emptyState.hidden=list.length>0;
-  document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('active',c.dataset.value===ch&&ch!==''));
-  document.querySelectorAll('.images img').forEach(img=>img.addEventListener('click',()=>openLightbox(img.src,img.dataset.caption||'')));
+  const q = searchInput.value.trim();
+  const ch = chapterSelect.value;
+  container.innerHTML = '';
+  lessons.forEach((chapter) => {
+    if (ch && chapter.chapter !== ch) return;
+    chapter.lessons.forEach((l) => {
+      if (!match(l.title, q)) return;
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.innerHTML = `
+        <h3>${l.title}</h3>
+        <div class="thumb-grid">
+          ${l.images.slice(0,2).map((src,i) => `<div class='thumb'><img src='${src}' loading='lazy' alt='${l.title} - ${i+1}'></div>`).join('')}
+          ${l.images.length>2 ? `<div class='thumb'><img src='${l.images[2]}' loading='lazy' alt='${l.title} - 3'><span class='more-badge'>+${l.images.length-3}</span></div>` : ''}
+        </div>
+        <div class='actions'>
+          <button class='btn primary' data-title='${l.title}'>عرض كل الصور</button>
+          <span class='tags'>${chapter.chapter}</span>
+        </div>`;
+      card.querySelector('.btn.primary').addEventListener('click', () => openLightbox(l.images, l.title, 0));
+      card.querySelectorAll('.thumb img').forEach((img, idx) => {
+        img.addEventListener('click', () => openLightbox(l.images, l.title, idx));
+      });
+      container.appendChild(card);
+    });
+  });
 }
 
-const lb=document.getElementById('lightbox'), lbImg=document.getElementById('lbImg'), lbCap=document.getElementById('lbCaption'), lbClose=document.getElementById('lbClose');
-function openLightbox(src,cap=''){ lbImg.src=src; lbCap.textContent=cap; lb.hidden=false; lb.setAttribute('aria-hidden','false'); }
-function closeLightbox(){ lb.setAttribute('aria-hidden','true'); lb.hidden=true; lbImg.src=''; }
-lb.addEventListener('click',(e)=>{ if(e.target===lb) closeLightbox(); });
-lbClose.addEventListener('click', closeLightbox);
-window.addEventListener('keydown',(e)=>{ if(e.key==='Escape'&&lb.getAttribute('aria-hidden')==='false') closeLightbox(); });
+searchInput.addEventListener('input', render);
+chapterSelect.addEventListener('change', render);
+resetBtn.addEventListener('click', ()=>{searchInput.value='';chapterSelect.value='';render();});
 
-searchInput.addEventListener('input', debounce(()=>render(),150));
-chapterSelect.addEventListener('change', ()=>render());
-clearBtn.addEventListener('click', ()=>{ searchInput.value=''; chapterSelect.value=''; render(); });
+let lbIdx=0, lbImages=[], lbTitle='';
+const lb = document.getElementById('lightbox');
+const lbImg = document.getElementById('lbImage');
+const lbCaption = document.getElementById('lbCaption');
+document.getElementById('lbClose').onclick=()=>lb.classList.remove('open');
+document.getElementById('lbPrev').onclick=()=>showIdx(lbIdx-1);
+document.getElementById('lbNext').onclick=()=>showIdx(lbIdx+1);
+lb.addEventListener('click',(e)=>{if(e.target===lb)lb.classList.remove('open');});
+document.addEventListener('keydown',(e)=>{
+  if(!lb.classList.contains('open'))return;
+  if(e.key==='Escape')lb.classList.remove('open');
+  if(e.key==='ArrowRight')showIdx(lbIdx+1);
+  if(e.key==='ArrowLeft')showIdx(lbIdx-1);
+});
 
-populateChapterFilter(); render();
+function openLightbox(images,title,start=0){
+  lbImages=images; lbTitle=title; lbIdx=start;
+  showIdx(lbIdx);
+  lb.classList.add('open');
+}
+function showIdx(i){
+  if(!lbImages.length)return;
+  lbIdx=(i+lbImages.length)%lbImages.length;
+  lbImg.src=lbImages[lbIdx];
+  lbCaption.textContent=`${lbTitle} — صورة ${lbIdx+1} من ${lbImages.length}`;
+}
+
+render();
