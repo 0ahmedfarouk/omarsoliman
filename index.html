@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Chemistry Lessons – Mr. Omar Soliman</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <header class="header">
+    <div class="container nav">
+      <div class="brand">
+        <img src="images/logo.png" alt="Logo" class="logo">
+        <h1>Chemistry Lessons – Mr. Omar Soliman</h1>
+      </div>
+      <div class="actions">
+        <a href="https://mansety.com/" target="_blank" rel="noopener" class="btn btn-primary">منصة الشروحات</a>
+        <button id="adminBtn" class="btn">لوحة الإدارة</button>
+        <a href="https://www.tiktok.com/@wearedevx" target="_blank" rel="noopener" class="btn">@wearedevx</a>
+        <a href="https://www.tiktok.com/@mr.omarsoliman" target="_blank" rel="noopener" class="btn">@mr.omarsoliman</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="searchbar">
+      <div class="search-controls">
+        <select id="chapterFilter" class="input">
+          <option value="all">كل الفصول</option>
+          <option value="1">Chapter 1</option>
+          <option value="2">Chapter 2</option>
+        </select>
+      </div>
+      <input id="search" class="input" type="search" placeholder="ابحث باسم الدرس…" />
+      <button id="resetFilters" class="btn" title="مسح البحث">مسح</button>
+    </div>
+
+    
+    <!-- لوحة الإدارة -->
+    <section id="adminPanel" class="admin" aria-label="لوحة الإدارة">
+      <h3>إدارة الدروس والسبورات</h3>
+      <p class="muted">أدخل كلمة المرور للوصول: <strong>2468</strong> (يمكن تغييرها من الكود)</p>
+      <div class="admin-row">
+        <label>الفصل:
+          <select id="adminChapter" class="input small">
+            <option value="1">Chapter 1</option>
+            <option value="2">Chapter 2</option>
+          </select>
+        </label>
+        <label>الدرس (اكتب اسمًا جديدًا أو اختر موجودًا):
+          <input id="adminLessonTitle" class="input" placeholder="مثال: Lesson 10 أو Lesson 1"/>
+        </label>
+        <label>أو اختر درسًا موجودًا:
+          <select id="adminLessonSelect" class="input small">
+            <option value="">— اختر درسًا —</option>
+          </select>
+        </label>
+      </div>
+      <div class="admin-row">
+        <label class="dropzone" for="adminBoards">
+          <input id="adminBoards" type="file" accept="image/*" multiple style="display:none" />
+          <span>اسحب وأفلت الصور هنا أو اضغط للاختيار</span>
+        </label>
+      </div>
+      <div class="admin-row">
+        <button id="addBoardsBtn" class="btn btn-primary">إضافة/تحديث</button>
+        <button id="exportDataBtn" class="btn">تصدير data.js</button>
+        <button id="hideAdmin" class="btn">إخفاء اللوحة</button>
+        <span class="muted" id="adminStatus"></span>
+      </div>
+    </section>
+
+    <section id="grid" class="grid" aria-live="polite"></section>
+  </main>
+
+  <dialog id="wbModal" class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="wbTitle">Whiteboard</div>
+      <button class="x" id="closeModal" title="إغلاق">×</button>
+    </div>
+    <div class="wb-wrap"><img id="wbImg" class="wb-img" alt="Whiteboard" /></div>
+    <div class="modal-actions">
+      <a id="downloadBtn" class="btn" download>تحميل الصورة</a>
+      <div class="spacer"></div>
+      <button class="btn btn-danger" id="closeModal2">إغلاق</button>
+    </div>
+  </dialog>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="muted">© <span id="year"></span> Mr. Omar Soliman – All rights reserved</div>
+      <nav class="social">
+        <strong>TikTok:</strong>
+        <a href="https://www.tiktok.com/@wearedevx" target="_blank" rel="noopener">@wearedevx</a> •
+        <a href="https://www.tiktok.com/@mr.omarsoliman" target="_blank" rel="noopener">@mr.omarsoliman</a> •
+        <a href="https://www.tiktok.com/@omarsoliman914" target="_blank" rel="noopener">@omarsoliman914</a> •
+        <a href="https://www.tiktok.com/@omar.soliman.core" target="_blank" rel="noopener">@omar.soliman.core</a>
+      </nav>
+      <a href="https://mansety.com/" target="_blank" rel="noopener" class="btn">→ Mansety منصة الشروحات</a>
+    </div>
+  </footer>
+
+  <dialog id="welcomeModal" class="modal welcome">
+    <div class="modal-header">
+      <div class="modal-title">رسالة ترحيب</div>
+      <button class="x" id="welcomeClose">×</button>
+    </div>
+    <div style="padding:16px">
+      <h3 style="margin:6px 0 8px">عزيزي الطالب،</h3>
+      <p style="line-height:1.8">عشانك، كمل واسعى لهدفك عشان خاطر أهلك. ركّز، ذاكر، وخلّيك دايمًا فاكر إن مجهودك النهاردة هو سبب نجاحك بكرة 💪✨</p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="welcomeOk">ابدأ المذاكرة الآن</button>
+    </div>
+  </dialog>
+
+
+  <script src="data.js"></script>
+  <script src="script.js?v=legacy1"></script>
+</body>
+</html>
