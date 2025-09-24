@@ -32,11 +32,6 @@ body {
     box-shadow: var(--shadow);
 }
 
-.brand {
-    display: flex;
-    align-items: center;
-}
-
 .controls {
     position: fixed;
     top: 20px;
@@ -73,9 +68,9 @@ body {
     background-color: #0046cc;
 }
 
-// Admin Panel Styling
+// رابط لوحة الإدارة
 .admin-panel-link {
-    display: none;  /* Hidden by default */
+    display: none;  /* مخفي افتراضيًا */
     background-color: #0d6efd;
     color: white;
     padding: 10px 20px;
