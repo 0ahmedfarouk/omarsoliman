@@ -1,6 +1,7 @@
-// بيانات الدروس - يتم تعبئتها من ملف data.js
+// بيانات الدروس - سيتم تعبئتها من ملف data.js
 const lessons = window.SITE_DATA.lessons;
 
+// عرض الدروس على الصفحة
 function displayLessons() {
     const lessonsContainer = document.getElementById('lessons');
     lessons.forEach(lesson => {
@@ -13,11 +14,27 @@ function displayLessons() {
         const lessonImage = document.createElement('img');
         lessonImage.src = lesson.image;
         lessonImage.alt = lesson.title;
+        lessonImage.classList.add('lesson-image');
 
         lessonCard.appendChild(lessonTitle);
         lessonCard.appendChild(lessonImage);
         lessonsContainer.appendChild(lessonCard);
+
+        lessonImage.addEventListener('click', () => openWhiteboard(lesson.image));
     });
+}
+
+// فتح الصبورة عند النقر على الصورة
+function openWhiteboard(imageSrc) {
+    const whiteboardImage = document.getElementById('whiteboardImage');
+    const lightbox = document.getElementById('lightbox');
+    const closeButton = document.getElementById('closeButton');
+    const downloadButton = document.getElementById('downloadButton');
+
+    whiteboardImage.src = imageSrc;
+    lightbox.style.display = 'block';
+    closeButton.style.display = 'block';
+    downloadButton.style.display = 'block';
 }
 
 // إغلاق الصبورة
@@ -31,7 +48,7 @@ closeButton.addEventListener('click', () => {
     downloadButton.style.display = 'none';  // إخفاء زر التحميل
 });
 
-// تحميل الصبورة
+// تحميل الصورة
 downloadButton.addEventListener('click', () => {
     const imageURL = whiteboardImage.src;
     const a = document.createElement('a');
